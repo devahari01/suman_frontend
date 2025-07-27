@@ -374,7 +374,7 @@ const Sidebar = () => {
                     
                   </ul>
                 </li>
-                <li
+                {/* <li
                   className={`${
                     "/inventory" === pathName
                       ? "active"
@@ -387,7 +387,7 @@ const Sidebar = () => {
                   <Link to="/inventory" onClick={() => toggleSidebar("")}>
                     <FeatherIcon icon="user" /> <span>Inventory</span>
                   </Link>
-                </li>
+                </li> */}
                 <li
                   className={`${
                     "/inventory" === pathName
@@ -528,23 +528,6 @@ const Sidebar = () => {
                 </li>
                 <li
                   className={`${
-                    "/invoice-list" === pathName ||
-                    "/add-invoice" === pathName ||
-                    pathName.includes("/edit-invoice") ||
-                    pathName.includes("/view-invoice")
-                      ? "active"
-                      : ""
-                  }`}
-                  style={{
-                    display: showHide("invoice") ? "none" : "block",
-                  }}
-                >
-                  <Link to="/invoice-list" onClick={() => toggleSidebar("")}>
-                    <FeatherIcon icon="file" /> <span>Invoice</span>
-                  </Link>
-                </li>
-                <li
-                  className={`${
                     "/delivery-challans" === pathName ||
                     "/add-delivery-challans" === pathName ||
                     pathName.includes("/edit-delivery-challan/")
@@ -560,9 +543,27 @@ const Sidebar = () => {
                     onClick={() => toggleSidebar("")}
                   >
                     <FeatherIcon icon="book-open" />{" "}
-                    <span>Goods outward</span>
+                    <span>Goods outward - DC</span>
                   </Link>
                 </li>
+                <li
+                  className={`${
+                    "/invoice-list" === pathName ||
+                    "/add-invoice" === pathName ||
+                    pathName.includes("/edit-invoice") ||
+                    pathName.includes("/view-invoice")
+                      ? "active"
+                      : ""
+                  }`}
+                  style={{
+                    display: showHide("invoice") ? "none" : "block",
+                  }}
+                >
+                  <Link to="/invoice-list" onClick={() => toggleSidebar("")}>
+                    <FeatherIcon icon="file" /> <span>Invoice</span>
+                  </Link>
+                </li>
+                
                 <li
                   className={`${
                     "/sales-return" === pathName ||

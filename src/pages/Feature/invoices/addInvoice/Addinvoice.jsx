@@ -17,6 +17,7 @@ import DatePickerComponent from "../../datePicker/DatePicker";
 import dayjs from "dayjs";
 import { ApiServiceContext, InvoiceNum } from "../../../../core/core-index";
 import { EditChallanContext } from "../../deliveryChallans/EditDeliveryChallan/EditChallan.control";
+import { message } from "antd";
 
 
 const EditableContext = React.createContext(null);
@@ -242,21 +243,10 @@ useEffect(() => {
       removeSeletctedProd = productsCloneData.filter((prod) => {
         return prod?._id != `${product_id}`;
       });
-      // setproductsCloneData(removeSeletctedProd);
-      // const sumOfQuantity = dataSource.reduce((acc, item) => {
-      //   if (item.productDetails?.length > 0) {
-      //     item.productDetails.forEach((detail) => {
-      //       const existingBatch = acc.find((b) => b.batchNo === detail.batchNo);
-      //       if (existingBatch) {
-      //         existingBatch.quantity += detail.quantity;
-      //       } else {
-      //         acc.push({ batchNo: detail.batchNo, quantity: detail.quantity-item.productDetails.quantity });
-      //       }
-      //     });
-      //   }
-      //   return acc;
-      // }, []);
-      // console.log({sumOfQuantity})
+      if (!selectedProduct?.productDetails || selectedProduct.productDetails.length === 0) {
+        message.warning("This product has no Quantity.");
+        return;
+      }
       const newData = {
         key: count,
         name: selectedProduct?.name,

@@ -42,10 +42,10 @@ const ListCategory = () => {
       title: "Category Name",
       dataIndex: "name",
     },
-    {
-      title: "Slug",
-      dataIndex: "slug",
-    },
+    // {
+    //   title: "Slug",
+    //   dataIndex: "slug",
+    // },
     
     (update || remove || admin) && {
       title: "Action",

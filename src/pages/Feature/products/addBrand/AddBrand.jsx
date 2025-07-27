@@ -48,7 +48,7 @@ const AddBrand = () => {
               )}
             />
           </div>
-          <div className="form-group">
+          {/* <div className="form-group">
             <label>
               Slug <span className="text-danger">*</span>
             </label>
@@ -72,7 +72,7 @@ const AddBrand = () => {
                 </>
               )}
             />
-          </div>
+          </div> */}
           {/*<div className="form-group">
             <label>Image</label>
             <Controller

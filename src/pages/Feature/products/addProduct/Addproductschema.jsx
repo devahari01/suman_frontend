@@ -34,7 +34,7 @@ export const addproductPageschema = yup
 
   type: yup.string().typeError("Choose Any Type"),
   name: yup.string().required("Enter Product Name"),
-  sku: yup.number().typeError("SKU Must Be a Number"),
+  // sku: yup.number().typeError("SKU Must Be a Number"),
 
   sellingPrice: yup
     .number()

@@ -59,25 +59,25 @@ const ListVendors = () => {
       key: "created_at",
       render: (record) => <>{record.created_at}</>,
     },
-    {
-      title: "Closing Balance",
-      dataIndex: "balance",
-      key: "balance",
-      render: (text, record) => (
-        <>
-          {currencyData ? currencyData : "$"}
-          {Number(record?.balance).toLocaleString("en-IN", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })
-            ? Number(record?.balance).toLocaleString("en-IN", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })
-            : 0}
-        </>
-      ),
-    },
+    // {
+    //   title: "Closing Balance",
+    //   dataIndex: "balance",
+    //   key: "balance",
+    //   render: (text, record) => (
+    //     <>
+    //       {currencyData ? currencyData : "$"}
+    //       {Number(record?.balance).toLocaleString("en-IN", {
+    //         minimumFractionDigits: 2,
+    //         maximumFractionDigits: 2,
+    //       })
+    //         ? Number(record?.balance).toLocaleString("en-IN", {
+    //             minimumFractionDigits: 2,
+    //             maximumFractionDigits: 2,
+    //           })
+    //         : 0}
+    //     </>
+    //   ),
+    // },
     (permission?.update || permission?.delete || admin) && {
       title: "Action",
       render: (record) => (

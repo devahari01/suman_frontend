@@ -135,19 +135,19 @@ const AddLedger = () => {
         </>
       ),
     },
-    {
-      title: "Closing Balance",
-      dataIndex: "closingBalance",
-      render: (text, record) => (
-        <>
-          {currencyData ? currencyData : "$"}
-          {Number(record?.closingBalance).toLocaleString("en-IN", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
-        </>
-      ),
-    },
+    // {
+    //   title: "Closing Balance",
+    //   dataIndex: "closingBalance",
+    //   render: (text, record) => (
+    //     <>
+    //       {currencyData ? currencyData : "$"}
+    //       {Number(record?.closingBalance).toLocaleString("en-IN", {
+    //         minimumFractionDigits: 2,
+    //         maximumFractionDigits: 2,
+    //       })}
+    //     </>
+    //   ),
+    // },
   ];
 
   const checkDisable = () => {

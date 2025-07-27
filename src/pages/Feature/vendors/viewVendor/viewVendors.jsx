@@ -121,7 +121,7 @@ const ViewVendor = () => {
                       </div>
                     </div>
 
-                    <div className="col-lg-6 col-sm-12">
+                    {/*<div className="col-lg-6 col-sm-12">
                       <div className="form-group">
                         <label>Closing Balance</label>
                         <Controller
@@ -146,7 +146,7 @@ const ViewVendor = () => {
                           defaultValue=""
                         />
                       </div>
-                    </div>
+                    </div>*/}
                     <div className="col-lg-12 col-md-12">
                       <div className="form-group d-inline-flex align-center mb-0">
                         <label className="me-5 mb-0">{"  "}Mode : {radio1 ? "Debit":"Credit"}</label>

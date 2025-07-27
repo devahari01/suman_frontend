@@ -72,7 +72,7 @@ const Addcategory = () => {
                         />
                       </div>
                     </div>
-                    <div className="col-lg-4 col-sm-12">
+                    {/* <div className="col-lg-4 col-sm-12">
                       <div className="form-group">
                         <label>
                           Slug<span className="text-danger"> *</span>
@@ -106,7 +106,7 @@ const Addcategory = () => {
                           )}
                         />
                       </div>
-                    </div>
+                    </div> */}
                   
                     <div className="col-lg-6 col-sm-12">
                       <div className="form-group mb-0 pb-0">

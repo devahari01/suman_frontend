@@ -8,7 +8,7 @@ import { ApiServiceContext, successToast } from "../../../../core/core-index";
 
 const addBrandSchema = yup.object().shape({
   name: yup.string().required("Enter Name"),
-  slug: yup.string().max(20, "Maximum length exceeded").required("Enter Slug"),
+  // slug: yup.string().max(20, "Maximum length exceeded").required("Enter Slug"),
 });
 
 const EditBrandContext = createContext();

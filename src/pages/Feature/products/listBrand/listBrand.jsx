@@ -41,10 +41,10 @@ const ListBrand = () => {
       title: "Brand Name",
       dataIndex: "name",
     },
-    {
+    /* {
       title: "Slug",
       dataIndex: "slug",
-    },
+    }, */
     (update || remove || admin) && {
       title: "Action",
       render: (record) => (

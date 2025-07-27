@@ -17,7 +17,33 @@ const editvendorPageschema = yup.object().shape({
     .min(10, "Phone Number Must Be At Least 10 Digits")
     .max(15, "Phone Number Must Be At Most 15 Digits")
     .matches(/^\+?[1-9]\d*$/, "Invalid phone number"),
+  balance: yup.string(),
+  balanceType: yup.string(),
+  noOfDaysCount: yup.string().when("balanceType", {
+    is: (val) => val === "Credit",
+    then: yup.string().required("Enter No of Days Count"),
+    otherwise: yup.string().notRequired(),
+  }),
+  bankDetails: yup.object().shape({
+    bankName: yup.string().required("Enter Bank Name"),
+    branch: yup.string().required("Enter Branch Name"),
+    accountHolderName: yup.string().required("Enter Account Holder Name"),
+    accountNumber: yup.string().required("Enter Account Number"),
+    IFSC: yup.string().required("Enter IFSC"),
+    shift: yup.string(), // Optional
+  }),
+  billingAddress: yup.object().shape({
+    name: yup.string().required("Billing Name is required"),
+    addressLine1: yup.string().required("Address Line 1 is required"),
+    addressLine2: yup.string(),
+    city: yup.string().required("City is required"),
+    state: yup.string().required("State is required"),
+    county: yup.string().required("County is required"),
+    pincode: yup.string().required("Pincode is required"),
+    country: yup.string().required("Country is required"),
+  }),
 });
+
 
 const EditvendorContext = createContext({
   editvendorPageschema: editvendorPageschema,
@@ -47,8 +73,27 @@ const EditvendorComponentController = (props) => {
       vendor_name: data?.vendor_name,
       vendor_email: data?.vendor_email,
       vendor_phone: data?.vendor_phone,
-      balance: data?.balance ? data?.balance : 0,
+      balance: data?.balance || 0,
       balanceType: data?.balanceType,
+      noOfDaysCount: data?.noOfDaysCount,
+      bankDetails: {
+        bankName: data?.bankDetails?.bankName || "",
+        branch: data?.bankDetails?.branch || "",
+        accountHolderName: data?.bankDetails?.accountHolderName || "",
+        accountNumber: data?.bankDetails?.accountNumber || "",
+        IFSC: data?.bankDetails?.IFSC || "",
+        shift: data?.bankDetails?.shift || "",
+      },
+      billingAddress: {
+        name: data?.billingAddress?.name || "",
+        addressLine1: data?.billingAddress?.addressLine1 || "",
+        addressLine2: data?.billingAddress?.addressLine2 || "",
+        city: data?.billingAddress?.city || "",
+        state: data?.billingAddress?.state || "",
+        county: data?.billingAddress?.county || "",
+        pincode: data?.billingAddress?.pincode || "",
+        country: data?.billingAddress?.country || "",
+      },
     };
     const url = `${updateVendor}/${vendorDetails?._id}`;
     const response = await putData(url, obj);
