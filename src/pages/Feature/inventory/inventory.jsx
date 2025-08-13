@@ -176,43 +176,43 @@ const Inventory = () => {
         </>
       ),
     },*/
-    (create || update || admin) && {
-      title: "Action",
-      dataIndex: "Action",
-      render: (text, record) => {
-        return (
-          <div className="d-flex align-items-center">
-            {(create || update || admin) && (
-              <Link
-                to="#"
-                className="btn btn-greys bg-success-light me-2"
-                data-bs-toggle="modal"
-                data-bs-target="#stock_in"
-                onClick={() => {
-                  EditStock(record);
-                }}
-              >
-                <i className="fa fa-plus-circle me-1" /> Stock in
-              </Link>
-            )}
-            {(create || update || admin) && (
-              <Link
-                to="#"
-                className="btn btn-greys bg-danger-light me-2"
-                data-bs-toggle="modal"
-                data-bs-target="#stock_out"
-                onClick={() => {
-                  EditStock(record, "delete");
-                }}
-              >
-                <i className="fa fa-plus-circle me-1" /> Stock out
-              </Link>
-            )}
-          </div>
-        );
-      },
+    // (create || update || admin) && {
+    //   title: "Action",
+    //   dataIndex: "Action",
+    //   render: (text, record) => {
+    //     return (
+    //       <div className="d-flex align-items-center">
+    //         {(create || update || admin) && (
+    //           <Link
+    //             to="#"
+    //             className="btn btn-greys bg-success-light me-2"
+    //             data-bs-toggle="modal"
+    //             data-bs-target="#stock_in"
+    //             onClick={() => {
+    //               EditStock(record);
+    //             }}
+    //           >
+    //             <i className="fa fa-plus-circle me-1" /> Stock in
+    //           </Link>
+    //         )}
+    //         {(create || update || admin) && (
+    //           <Link
+    //             to="#"
+    //             className="btn btn-greys bg-danger-light me-2"
+    //             data-bs-toggle="modal"
+    //             data-bs-target="#stock_out"
+    //             onClick={() => {
+    //               EditStock(record, "delete");
+    //             }}
+    //           >
+    //             <i className="fa fa-plus-circle me-1" /> Stock out
+    //           </Link>
+    //         )}
+    //       </div>
+    //     );
+    //   },
       
-    },
+    // },
     {
       title: "Action",
       dataIndex: "Action",

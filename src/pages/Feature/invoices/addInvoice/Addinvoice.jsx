@@ -129,7 +129,7 @@ useEffect(() => {
     setValue: addinvsetValue,
     formState: { errors },
   } = useForm({ resolver: yupResolver(addInvoiceschema),defaultValues: { 
-      products:defaultValue,customerId:defaultCustomer
+      products:defaultValue,customerId:defaultCustomer,invoiceDate:dayjs()
     } });
 
   const {
@@ -237,7 +237,7 @@ useEffect(() => {
       selectedProduct = productData.find((prod) => {
         return prod?._id == `${product_id}`;
       });
-      console.log({selectedProduct})
+      // console.log({selectedProduct})
 
       let removeSeletctedProd;
       removeSeletctedProd = productsCloneData.filter((prod) => {
@@ -247,6 +247,7 @@ useEffect(() => {
         message.warning("This product has no Quantity.");
         return;
       }
+      console.log("selectedProduct",selectedProduct.productDetails[0].price_per_piece)
       const newData = {
         key: count,
         name: selectedProduct?.name,
@@ -256,7 +257,8 @@ useEffect(() => {
         quantity: 1,
         discountType: Number(selectedProduct?.discountType),
         discount: Number(selectedProduct?.discountValue).toFixed(2),
-        rate: Number(selectedProduct?.sellingPrice).toFixed(2),
+        rate_per_piece: selectedProduct?.productDetails[0].price_per_piece ?? Number(selectedProduct?.productDetails[0].price_per_piece).toFixed(2) ?? Number(selectedProduct?.sellingPrice).toFixed(2),
+        rate: selectedProduct?.productDetails[0].price_per_piece ?? Number(selectedProduct?.productDetails[0].price_per_piece).toFixed(2) ?? Number(selectedProduct?.sellingPrice).toFixed(2),
         tax: taxfromcustomer,//Number(selectedProduct?.tax?.taxRate).toFixed(2),
         sku: selectedProduct?.sku,//Number(selectedProduct?.tax?.taxRate).toFixed(2),
         productDetails:selectedProduct?.productDetails,
@@ -264,6 +266,10 @@ useEffect(() => {
         primaryUnit:selectedProduct?.primaryUnit,
         secondaryUnit:selectedProduct?.secondaryUnit,
         numberOfPacks:selectedProduct?.numberOfPacks,
+        halfSkitQty:selectedProduct?.halfSkitQty,
+        halfSkitPrice:selectedProduct?.productDetails[0].halfskitprice ?? selectedProduct?.productDetails[0].halfskitprice ?? selectedProduct?.halfSkitPrice,
+        fullSkitQty:selectedProduct?.fullSkitQty,
+        fullSkitPrice:selectedProduct?.productDetails[0].fullskitprice ?? selectedProduct?.productDetails[0].fullskitprice ?? selectedProduct?.fullSkitPrice,
         boxQuantity:0,
         pieceQuantity:0,
         isRateFormUpadted: false,
@@ -274,7 +280,7 @@ useEffect(() => {
         form_updated_rate: Number(selectedProduct?.sellingPrice).toFixed(2),
         form_updated_tax: taxfromcustomer,//Number(selectedProduct?.tax?.taxRate).toFixed(2),
 
-        amount: 0,
+        amount: Number(selectedProduct?.sellingPrice).toFixed(2),
       };
 
       let Calulateddicount;
@@ -450,6 +456,8 @@ useEffect(() => {
         ...item,
         batchNo: item.productDetails[0].batchNo, // Set default batchNo
         quantity: item.productDetails[0].quantity, // Ensure quantity is updated
+        halfSkitPrice: item.productDetails[0].halfSkitPrice || item.halfSkitPrice,
+        fullSkitPrice: item.productDetails[0].fullSkitPrice || item.fullSkitPrice,
       };
     }
     return item;
@@ -504,7 +512,7 @@ useEffect(() => {
         ? resetRowdataBefore?.tax?.taxRate
         : 0;
     }
-
+    
     row.rate = resetRowdataBeforerate;
     row.discount = resetRowdataBeforediscount;
     row.tax = resetRowdataBeforetax;
@@ -532,7 +540,7 @@ useEffect(() => {
       });
       setrowErr(newrowData);
 
-      let temp_rate = Number(row.rate);
+      let temp_rate = Number(row.rate_per_piece);
       let temp_discount = Number(row.discount);
       let temp_tax = Number(row.tax);
       let enteredVlaue = value;
@@ -888,7 +896,7 @@ useEffect(() => {
     // Call handleChanges
     handleChanges({target:newValue}, recordKey);
   };*/
-  const handleBatchNoChanges = (event, key) => {
+/*   const handleBatchNoChanges = (event, key) => {
     const { value } = event.target;
     const newData = [...dataSource];
     const index = newData.findIndex((item) => item.key === key);
@@ -902,7 +910,15 @@ useEffect(() => {
       newData[index] = {
         ...newData[index],
         batchNo: value,
+        rate_per_piece: selectedBatch?.price_per_piece ?? Number(selectedBatch?.price_per_piece).toFixed(2) ?? Number(newData[index]?.form_updated_rate).toFixed(2),
+        rate: selectedBatch?.price_per_piece ?? Number(selectedBatch?.price_per_piece).toFixed(2) ?? Number(newData[index]?.form_updated_rate).toFixed(2),
+        halfSkitPrice: selectedBatch?.halfskitprice ?? selectedBatch?.halfSkitPrice ?? newData[index]?.halfSkitPrice,
+        fullSkitPrice: selectedBatch?.fullskitprice ?? selectedBatch?.fullSkitPrice ?? newData[index]?.fullSkitPrice,
+        // Reset quantities when batch changes
+        // boxQuantity: null,
+        // pieceQuantity: null,
       };
+
 
       setDataSource(newData);
     }
@@ -917,35 +933,219 @@ useEffect(() => {
     const newData = [...dataSource];
     const index = newData.findIndex((item) => key === item.key);
     const item = newData[index];
-    
+    console.log("handleBoxQuantityChange",{row})
+    value = Number(parseInt(row.boxQuantity*row.numberOfPacks)+row.pieceQuantity)
+    if (value >=row.halfSkitQty && value <row.fullSkitQty){
+      row.rate_per_piece = row.halfSkitPrice
+    }else if (value >=row.fullSkitQty){
+      row.rate_per_piece = row.fullSkitPrice
+    }
+    console.log({item})
     newData.splice(index, 1, {
       ...item,
       ...row,
     });
+    console.log("newData",{newData})
     setDataSource(newData);
-    value = Number(parseInt(row.boxQuantity*row.numberOfPacks)+row.pieceQuantity)
+    
     updateRecordQuantity(key, { name, value});
+  };
+
+  const handlePieceQuantityChange = (event, key) => {
+    const { name } = event.target;    
+    var value = event.target.value;  
+      // console.log({ name, value })
+      const row = dataSource.find((item) => item.key == key);
+      row.pieceQuantity = parseInt(value) || 0;
+      console.log("handlePieceQuantityChange",{row})
+      const newData = [...dataSource];
+      const index = newData.findIndex((item) => key === item.key);
+      const item = newData[index];
+      value = Number(parseInt(row.boxQuantity*row.numberOfPacks)+row.pieceQuantity)
+      if (value >=row.halfSkitQty && value <row.fullSkitQty){
+        row.rate_per_piece = row.halfSkitPrice
+      }else if (value >=row.fullSkitQty){
+        row.rate_per_piece = row.fullSkitPrice
+      }
+      newData.splice(index, 1, {
+        ...item,
+        ...row,
+      });
+      setDataSource(newData);
+      
+      updateRecordQuantity(key, { name, value});
+  }; */
+// --- safe, authoritative price/tax calculation ---
+const calculateRateAndAmount = (row, totalQty, taxFromCustomer = taxfromcustomer) => {
+  // Pick batch (selected batch or fall back to first)
+  const selectedBatch =
+    row.productDetails?.find((b) => b.batchNo === row.batchNo) ||
+    row.productDetails?.[0] ||
+    {};
+
+  // Numeric defaults
+  const halfSkitQty = Number(row.halfSkitQty) || 0;
+  const fullSkitQty = Number(row.fullSkitQty) || 0;
+
+  // Price values (prefer batch prices, fallback to row values)
+  const basePrice =
+    Number(selectedBatch.price_per_piece ?? selectedBatch.priceperpiece ?? row.rate_per_piece) || 0;
+  const halfSkitPrice =
+    Number(selectedBatch.halfSkitPrice ?? selectedBatch.halfskitprice ?? row.halfSkitPrice) || 0;
+  const fullSkitPrice =
+    Number(selectedBatch.fullSkitPrice ?? selectedBatch.fullskitprice ?? row.fullSkitPrice) || 0;
+
+  // Decide rate_per_piece by thresholds
+  let ratePerPiece = basePrice;
+  if (totalQty === 0) {
+    // For 0 qty: keep base price but amounts should be zero
+    ratePerPiece = basePrice;
+  } else if (totalQty >= fullSkitQty && fullSkitPrice > 0) {
+    ratePerPiece = fullSkitPrice;
+  } else if (totalQty >= halfSkitQty && halfSkitPrice > 0) {
+    ratePerPiece = halfSkitPrice;
+  } else {
+    ratePerPiece = basePrice;
+  }
+
+  // store rate_per_piece back on row (so UI shows correct per-piece price)
+  row.rate_per_piece = Number(ratePerPiece).toFixed ? Number(ratePerPiece) : ratePerPiece;
+
+  // Total line rate (gross before discount/tax)
+  const totalRateValue = Number(totalQty || 0) * Number(ratePerPiece || 0);
+
+  // ---- Discount calculation ----
+  // Discount input: prefer the raw configured value (form_updated_discount), otherwise fall back
+  const discountType = Number(row.form_updated_discounttype ?? row.discountType ?? 0); // 2 = percent
+  const discountRaw = Number(row.form_updated_discount ?? row.discount ?? 0);
+
+  // If quantity is zero we treat discount amount as 0 (unless your business requires fixed discount irrespective of qty)
+  let discountAmount = 0;
+  if (Number(totalQty) > 0) {
+    if (discountType === 2) {
+      // percentage
+      discountAmount = totalRateValue * (discountRaw / 100);
+    } else {
+      // fixed absolute discount (per-line)
+      discountAmount = discountRaw || 0;
+    }
+  }
+  discountAmount = Number(discountAmount) || 0;
+
+  // ---- Tax calculation ----
+  // Tax rate: first prefer explicit form_updated_tax, then batch tax (if present), then taxInfo.taxRate, then customer's tax fallback
+  const taxRate =
+    Number(row.form_updated_tax ?? selectedBatch.tax ?? row.taxInfo?.taxRate ?? taxFromCustomer ?? 0) || 0;
+
+  const taxableAmount = Math.max(0, totalRateValue - discountAmount);
+  const taxAmount = Number(taxableAmount * (taxRate / 100)) || 0;
+
+  // ---- Store computed values back to the row (always overwrite stale values) ----
+  row.rate = totalRateValue.toFixed(2);         // gross before discount, as string "xx.yy"
+  row.discount = discountAmount.toFixed(2);     // discount amount (not percentage)
+  row.tax = taxAmount.toFixed(2);               // tax amount
+  row.amount = (taxableAmount + taxAmount).toFixed(2); // final amount for row
+
+  // Keep a numeric quantity stored too
+  row.quantity = Number(totalQty) || 0;
 };
 
+// --- When user selects a different batch for a row ---
+const handleBatchNoChanges = (event, key) => {
+  const batchNo = event.target.value;
+  const newData = [...dataSource];
+  const index = newData.findIndex((item) => item.key === key);
+  if (index === -1) return;
+  const row = { ...newData[index] };
+
+  const selectedBatch = row.productDetails?.find((detail) => detail.batchNo === batchNo);
+  if (selectedBatch) {
+    row.batchNo = batchNo;
+    // Update per-piece and skit prices from selected batch (coerce to numbers)
+    row.rate_per_piece =
+      Number(selectedBatch.price_per_piece ?? selectedBatch.priceperpiece) || Number(row.rate_per_piece || 0);
+    row.halfSkitPrice =
+      Number(selectedBatch.halfSkitPrice ?? selectedBatch.halfskitprice) || Number(row.halfSkitPrice || 0);
+    row.fullSkitPrice =
+      Number(selectedBatch.fullSkitPrice ?? selectedBatch.fullskitprice) || Number(row.fullSkitPrice || 0);
+
+    // Recompute using current quantity (boxes*packs + pieces) — ensure we compute totalQty correctly
+    const boxes = Number(row.boxQuantity || 0);
+    const packs = Number(row.numberOfPacks || 1);
+    const pieces = Number(row.pieceQuantity || 0);
+    const totalQty = boxes * packs + pieces;
+
+    calculateRateAndAmount(row, totalQty);
+
+    // Put updated row back and update dataSource
+    newData.splice(index, 1, row);
+    setDataSource(newData);
+  }
+};
+
+// --- When user changes box quantity (No of Boxes) ---
+const handleBoxQuantityChange = (event, key) => {
+  const boxes = parseInt(event.target.value, 10) || 0;
+  const newData = [...dataSource];
+  const index = newData.findIndex((item) => item.key === key);
+  if (index === -1) return;
+  const row = { ...newData[index] };
+
+  row.boxQuantity = boxes;
+  const packs = Number(row.numberOfPacks || 1);
+  const pieces = Number(row.pieceQuantity || 0);
+  const totalQty = boxes * packs + pieces;
+
+  calculateRateAndAmount(row, totalQty);
+
+  newData.splice(index, 1, row);
+  setDataSource(newData);
+};
+
+// --- When user changes piece quantity (No of Pieces) ---
 const handlePieceQuantityChange = (event, key) => {
+  const pieces = parseInt(event.target.value, 10) || 0;
+  const newData = [...dataSource];
+  const index = newData.findIndex((item) => item.key === key);
+  if (index === -1) return;
+  const row = { ...newData[index] };
+
+  row.pieceQuantity = pieces;
+  const boxes = Number(row.boxQuantity || 0);
+  const packs = Number(row.numberOfPacks || 1);
+  const totalQty = boxes * packs + pieces;
+
+  calculateRateAndAmount(row, totalQty);
+
+  newData.splice(index, 1, row);
+  setDataSource(newData);
+};
+
+const handlespecialpricechange = (event, key) => {
   const { name } = event.target;    
   var value = event.target.value;  
-    // console.log({ name, value })
-    const row = dataSource.find((item) => item.key == key);
-    row.pieceQuantity = parseInt(value) || 0;
-    const newData = [...dataSource];
-    const index = newData.findIndex((item) => key === item.key);
-    const item = newData[index];
-    
-    newData.splice(index, 1, {
-      ...item,
-      ...row,
-    });
-    setDataSource(newData);
-    value = Number(parseInt(row.boxQuantity*row.numberOfPacks)+row.pieceQuantity)
-    updateRecordQuantity(key, { name, value});
+  const row = dataSource.find((item) => item.key == key);
+  
+  // Update the rate_per_piece
+  row.rate_per_piece = value;
+  
+  const newData = [...dataSource];
+  const index = newData.findIndex((item) => key === item.key);
+  const item = newData[index];
+  
+  // Update the dataSource with new rate_per_piece
+  newData.splice(index, 1, {
+    ...item,
+    ...row,
+  });
+  setDataSource(newData);
+  console.log("handlespecialpricechange",{row})
+  // Calculate the total quantity to trigger recalculations
+  const qty = Number(parseInt(row.boxQuantity || 0) * (row.numberOfPacks || 1) + (row.pieceQuantity || 0));
+  console.log("qty",{qty})
+  // Trigger the quantity update which will recalculate all amounts
+  updateRecordQuantity(key, { name: 'quantity', value: qty });
 };
-
 const updateRecordQuantity = (recordKey, newValue) => {
   // Call handleChanges to propagate updates
   handleChanges({ target: newValue }, recordKey);
@@ -953,6 +1153,10 @@ const updateRecordQuantity = (recordKey, newValue) => {
 
 
   const defaultColumns = [
+    {
+      title: "Code",
+      dataIndex: "sku",
+    },
     {
       title: "Product",
       dataIndex: "name",
@@ -967,10 +1171,6 @@ const updateRecordQuantity = (recordKey, newValue) => {
           </>
         );
       }
-    },
-    {
-      title: "Code",
-      dataIndex: "sku",
     },
     {
       title: "Tot.Qty",
@@ -1008,23 +1208,7 @@ const updateRecordQuantity = (recordKey, newValue) => {
     {
       title: "Gross Quantity",
       dataIndex: "quantity",
-      // editable: true,
-      // render: (text, record) => (
-      //   <div>
-      //     <div className="d-flex align-items-center">
-      //       <input
-      //         type="text"
-      //         onKeyPress={handleNumberRestriction}
-      //         {...register(`qtyInput${record.key}`)}
-      //         className="form-control quantity-input"
-      //         onKeyDown={(e) => handleKey(e)}
-      //         onKeyUp={(e) => handleKey(e)}
-      //         onChange={(e) => handleChanges(e, record.key)}
-      //         defaultValue={record.quantity}
-      //       />
-      //     </div>
-      //   </div>
-      // ),
+      
       render: (text, record) => {
         // Ensure safe values (avoid undefined)
         const boxQuantity = record?.boxQuantity || 0;
@@ -1073,17 +1257,7 @@ const updateRecordQuantity = (recordKey, newValue) => {
               onChange={(e) => handleBoxQuantityChange(e, record.key)}
               defaultValue={record.boxQuantity || ""}
             />{record.primaryUnit}
-            {/*<select
-              value={record.primaryUnit || ""}
-              onChange={(e) => handlePrimaryUnitChange(e, record.key)}
-              className="form-control"
-              >
-              {filteredOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>*/}
+            
           </div>
         );
       },
@@ -1141,6 +1315,36 @@ const updateRecordQuantity = (recordKey, newValue) => {
           </div>
         );
       },
+    },
+    {
+      title: "Price per piece",
+      dataIndex: "rate_per_piece",
+    },
+    {
+      title: "Special Price",
+      dataIndex: "rate_per_piece",
+      render: (text, record) => {
+        return (
+          <div className="d-flex align-items-center">
+          <input
+              type="number"
+              className="form-control me-2"
+              placeholder="special price"
+              min="0"
+              onChange={(e) => handlespecialpricechange(e, record.key)}
+              defaultValue={record.rate_per_piece || ""}
+            />
+          </div>
+        );
+      }
+    },
+    {
+      title: "half Skit Price",
+      dataIndex: "halfSkitPrice",
+    },
+    {
+      title: "Full Skit Price",
+      dataIndex: "fullSkitPrice",
     },
     {
       title: "Rate",
@@ -1298,7 +1502,7 @@ const updateRecordQuantity = (recordKey, newValue) => {
                                   id="old_type"
                                   checked={type === "old"} // Add this to check if 'type' is 'old'
                                 />
-                                <span className="checkmark" /> Old
+                                <span className="checkmark" /> Dc to Invoice
                               </label>
                             </div>
                             <div className="form-control">
@@ -1310,7 +1514,7 @@ const updateRecordQuantity = (recordKey, newValue) => {
                                   id="new_type"
                                   checked={type === "new"} // Add this to check if 'type' is 'new'
                                 />
-                                <span className="checkmark" /> New
+                                <span className="checkmark" /> New Invoice
                               </label>
                             </div>
                           </div>
@@ -1456,7 +1660,7 @@ const updateRecordQuantity = (recordKey, newValue) => {
                                   errors?.referenceNo ? "error-input" : ""
                                 }`}
                                 type="text"
-                                onKeyPress={handleNumberRestriction}
+                                // onKeyPress={handleNumberRestriction}
                                 value={referenceNo?referenceNo:(value || "")}
                                 onChange={onChange}
                                 placeholder="Enter Reference Number"

@@ -196,7 +196,7 @@ const EditPurchaseOrder = () => {
         return prod?._id != `${product_id}`;
       });
       // setproductsCloneData(removeSeletctedProd);
-
+      // record?.quantity*record?.weight
       const newData = {
         key: count,
         name: selectedProduct?.name,
@@ -213,6 +213,8 @@ const EditPurchaseOrder = () => {
         weight:selectedProduct?.weight,
         numberOfPacks:selectedProduct?.numberOfPacks,
         primaryUnit:selectedProduct?.primaryUnit,
+        halfskitprice: "",
+        fullskitprice: "",
         isRateFormUpadted: false,
         form_updated_discounttype: selectedProduct?.discountType,
         form_updated_discount: Number(selectedProduct?.discountValue).toFixed(
@@ -222,7 +224,7 @@ const EditPurchaseOrder = () => {
         form_updated_tax: Number(selectedProduct?.tax?.taxRate).toFixed(2),
         amount: 0,
       };
-
+      console.log({newData})
       let Calulateddicount;
       let tdrateVlaue = Number(1 * selectedProduct?.purchasePrice);
 
@@ -519,6 +521,72 @@ const EditPurchaseOrder = () => {
     }
   };
 
+  const handleInlineRateChange = (event, key) => {
+    const { value } = event.target;
+    console.log({value})
+    const newData = [...dataSource];
+    const index = newData.findIndex((item) => item.key === key);
+    if (index === -1) return;
+
+    const row = { ...newData[index] };
+    const perUnitRate = Number(value || 0);
+    const quantity = Number(row.quantity || 0);
+
+    const discountType = Number(row.discountType);
+    const tempDiscount = row.isRateFormUpadted
+      ? Number(row.form_updated_discount)
+      : Number(row.discount);
+
+    const taxRate = row.isRateFormUpadted
+      ? Number(row.form_updated_tax)
+      : Number(row?.taxInfo?.taxRate);
+
+    const totalRateBeforeDiscount = Number(quantity * perUnitRate);
+
+    let calculatedDiscount;
+    if (discountType == "2") {
+      calculatedDiscount = Number(
+        (totalRateBeforeDiscount * (tempDiscount / 100)).toFixed(2)
+      );
+    } else {
+      calculatedDiscount = Number(Number(tempDiscount).toFixed(2));
+    }
+
+    const taxableBase = totalRateBeforeDiscount - calculatedDiscount;
+    const taxAmount = Number((taxableBase * (taxRate / 100)).toFixed(2));
+    const totalRate = Number(totalRateBeforeDiscount.toFixed(2));
+    const amount = Number((totalRate + taxAmount - calculatedDiscount).toFixed(2));
+
+    row.isRateFormUpadted = true;
+    row.form_updated_rate = perUnitRate;
+    row.rate = totalRate.toFixed(2);
+    row.discount = calculatedDiscount.toFixed(2);
+    row.tax = taxAmount.toFixed(2);
+    row.amount = amount.toFixed(2);
+    row.price_per_piece = perUnitRate;
+
+    newData.splice(index, 1, row);
+    setDataSource(newData);
+  };
+
+  const handleHalfSkitPriceChange = (event, key) => {
+    const { value } = event.target;
+    const newData = [...dataSource];
+    const index = newData.findIndex((item) => item.key === key);
+    if (index === -1) return;
+    newData[index] = { ...newData[index], halfskitprice: value };
+    setDataSource(newData);
+  };
+
+  const handleFullSkitPriceChange = (event, key) => {
+    const { value } = event.target;
+    const newData = [...dataSource];
+    const index = newData.findIndex((item) => item.key === key);
+    if (index === -1) return;
+    newData[index] = { ...newData[index], fullskitprice: value };
+    setDataSource(newData);
+  };
+
   const handleMFGChanges = (event, key) => {
     const { value } = event.target;
     const newData = [...dataSource];
@@ -593,12 +661,71 @@ const EditPurchaseOrder = () => {
       dataIndex: "batchNo",
       editable: true,
       render: (text, record) => (
-        <input
-          type="text"
-          className="form-control"
-          onChange={(e) => handleBatchNoChanges(e, record.key)}
-          defaultValue={record?.batchNo}
-        />
+        <div className="d-flex flex-column">
+          <input
+            type="text"
+            className="form-control"
+            onChange={(e) => handleBatchNoChanges(e, record.key)}
+            defaultValue={record?.batchNo}
+            placeholder="Batch No"
+          />
+        </div>
+      ),
+    },
+    {
+      title: "Price per piece",
+      dataIndex: "price",
+      editable: false,
+      render: (text, record) => (
+        <div className="d-flex flex-column">
+          <input
+            type="number"
+            className="form-control mt-1"
+            onChange={(e) => handleInlineRateChange(e, record.key)}
+            defaultValue={
+              record?.isRateFormUpadted
+                ? record?.form_updated_rate
+                : record?.rate && record?.quantity
+                ? (Number(record?.rate) / Number(record?.quantity)).toFixed(2)
+                : ""
+            }
+            placeholder="Rate"
+          />
+        </div>
+      ),
+    },
+    {
+      title: "Half Skit Price",
+      dataIndex: "halfskitprice",
+      editable: false,
+      render: (text, record) => (
+        <div className="d-flex flex-column">
+          
+          <input
+            type="text"
+            className="form-control mt-1"
+            onChange={(e) => handleHalfSkitPriceChange(e, record.key)}
+            defaultValue={record?.halfskitprice}
+            placeholder="Half Skit Price"
+          />
+          
+        </div>
+      ),
+    },
+    {
+      title: "Full Skit Price",
+      dataIndex: "fullskitprice",
+      editable: false,
+      render: (text, record) => (
+        <div className="d-flex flex-column">
+          <input
+            type="number"
+            className="form-control mt-1"
+            onChange={(e) => handleFullSkitPriceChange(e, record.key)}
+            defaultValue={record?.fullskitprice}
+            placeholder="Full Skit Price"
+          />
+        </div>
       ),
     },
     {

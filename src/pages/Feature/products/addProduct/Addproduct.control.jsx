@@ -53,10 +53,16 @@ const AddproductComponentController = (props) => {
     formData.append("hsnCode", data.hsnCode); // HSN Code
     formData.append("brand", data.brand?._id); // Brand
     formData.append("weight", data.weight); // Weight
-    formData.append("wholesalePrice", data.wholesalePrice); // Wholesale Price
+    formData.append("wholesalePrice", data.wholesalePrice || 0); // Wholesale Price
     formData.append("primaryUnit", data.primaryUnit); // Primary Unit
     formData.append("secondaryUnit", data.secondaryUnit); // Secondary Unit
     formData.append("numberOfPacks", data.numberOfPacks); // Number of Packs for a Box
+    formData.append("halfSkitQty", data.halfSkitQty || 0);
+    formData.append("halfSkitPrice", data.halfSkitPrice || 0);
+    formData.append("fullSkitQty", data.fullSkitQty || 0);
+    formData.append("fullSkitPrice", data.fullSkitPrice || 0);
+    formData.append("masterCaseType", data.masterCaseType);
+    formData.append("slot", data.slot);
     try {
       const response = await postData(addproductApi, formData);
       if (response.code === 200) {

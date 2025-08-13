@@ -2,26 +2,6 @@ import * as yup from "yup";
 export const addproductPageschema = yup
 .object()
 .shape({
-  // discountType: yup.object({
-  //   id: yup.string().required("Choose Discount Type"),
-  // }),
-  // discountValue: yup
-  //   .number()
-  //   .typeError("Discount Value is Required")
-  //   .when(
-  //     ["discountType", "sellingPrice"],
-  //     (discountType, sellingPrice, schema) => {
-  //       if (discountType.text === "Percentage") {
-  //         return schema.max(99, "Discount Value Must Be Less Than 100");
-  //       } else if (discountType.text === "Fixed") {
-  //         return schema.lessThan(
-  //           sellingPrice,
-  //           "Discount Value Must Be Less Than The Selling Price"
-  //         );
-  //       }
-  //       return schema;
-  //     }
-  //   ),
   tax: yup.object({
     _id: yup.string().required("Enter Tax"),
   }),
@@ -62,6 +42,44 @@ export const addproductPageschema = yup
     )
     .positive("Purchase Price must be a positive number")
     .required("Purchase Price is required"),
+
+    halfSkitQty: yup
+    .number()
+    .typeError("Enter Half Skit Quantity")
+    .integer("Half Skit Quantity must be an integer")
+    .positive("Must be a positive number")
+    .nullable(),
+
+  halfSkitPrice: yup
+    .number()
+    .typeError("Enter Half Skit Price")
+    .test(
+      "valid-half-price",
+      "Enter a valid Half Skit Price",
+      (value) =>
+        value === undefined || (typeof value === "number" && !/[eE+-]/.test(value?.toString()))
+    )
+    .positive("Must be a positive number")
+    .nullable(),
+
+  fullSkitQty: yup
+    .number()
+    .typeError("Enter Full Skit Quantity")
+    .integer("Full Skit Quantity must be an integer")
+    .positive("Must be a positive number")
+    .nullable(),
+
+  fullSkitPrice: yup
+    .number()
+    .typeError("Enter Full Skit Price")
+    .test(
+      "valid-full-price",
+      "Enter a valid Full Skit Price",
+      (value) =>
+        value === undefined || (typeof value === "number" && !/[eE+-]/.test(value?.toString()))
+    )
+    .positive("Must be a positive number")
+    .nullable(),
   
   alertQuantity: yup
     .number()

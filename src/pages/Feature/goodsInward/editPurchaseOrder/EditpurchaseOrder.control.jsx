@@ -222,6 +222,9 @@ const EditproductComponentController = (props) => {
       formData.append(`items[${i}][batchNo]`, dataSource[i]?.batchNo);
       formData.append(`items[${i}][mfgDate]`, dataSource[i]?.mfgDate);
       formData.append(`items[${i}][expDate]`, dataSource[i]?.expDate);
+      formData.append(`items[${i}][halfskitprice]`, dataSource[i]?.halfskitprice ?? "");
+      formData.append(`items[${i}][fullskitprice]`, dataSource[i]?.fullskitprice ?? "");
+      formData.append(`items[${i}][price_per_piece]`, dataSource[i]?.price_per_piece ?? "");
       let taxIfoFormdata = dataSource[i].taxInfo;
       if (typeof dataSource[i].taxInfo !== "string")
         taxIfoFormdata = JSON.stringify(dataSource[i].taxInfo);

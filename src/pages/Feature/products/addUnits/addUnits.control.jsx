@@ -14,7 +14,6 @@ const schema = yup.object().shape({
     .matches(/^[A-Za-z ]+$/, "Only Alphabets Are Allowed"),
   symbol: yup
     .string()
-    .required("Enter Symbol")
     .matches(/^[A-Za-z ]+$/, "Only Alphabets Are Allowed"),
 
 });

@@ -50,6 +50,7 @@ import RolePermissions from "../pages/Feature/rolePermission/index";
 import Permissions from "../pages/Feature/rolePermission/permission";
 import Payments from "../pages/Feature/payments/Index";
 import Users from "../pages/Feature/manageUser/ListUser/index";
+import Userinvoice from "../pages/Feature/manageUser/userinvoice/index";
 import AddUser from "../pages/Feature/manageUser/AddUser/index";
 import EditUser from "../pages/Feature/manageUser/EditUser/index";
 import PaymentSummary from "../pages/Feature/paymentSummary/index";
@@ -441,6 +442,10 @@ export const authRoutes = [
   {
     path: `/users`,
     element: <Users />,
+  },
+  {
+    path: `/userinvoice`,
+    element: <Userinvoice />,
   },
   {
     path: `/add-user`,

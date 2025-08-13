@@ -236,6 +236,37 @@ const Addproduct = () => {
                         </div>
                       </div>
                       <div className="col-lg-4 col-md-6 col-sm-12">
+                        <div className="form-group add-products input_text">
+                          <label>
+                            Generate Barcode <span className="text-danger"> *</span>
+                          </label>
+                          <Controller
+                            name="barcode"
+                            type="text"
+                            control={control}
+                            render={({ field: { value, onChange } }) => (
+                              <input
+                                className={`form-control ${errors?.barcode ? "error-input" : ""}`}
+                                type="text"
+                                value={value}
+                                onChange={onChange}
+                                placeholder="Enter Barcode"
+                                autoComplete="false"
+                              />
+                            )}
+                            defaultValue=""
+                          />
+                          <button
+                            type="button"
+                            onClick={() => getbarcode()}
+                            className="btn btn-primary"
+                          >
+                            Generate Code
+                          </button>
+                          <small>{errors?.barcode?.message}</small>
+                        </div>
+                      </div>
+                      <div className="col-lg-4 col-md-6 col-sm-12">
                         <div className="form-group input_text">
                           <label>
                             Brand {/*<span className="text-danger"> *</span>*/}
@@ -285,6 +316,80 @@ const Addproduct = () => {
                             )}
                           />
                           <small>{errors?.category?._id?.message}</small>
+                        </div>
+                      </div>
+                      <h5 className="form-title">Weight Details</h5>
+                      <div className="col-lg-4 col-md-6 col-sm-12">
+                        {/* Number of Packs for a Box */}
+                        <div className="form-group input_text">
+                          <label>
+                            Number of items<span className="text-danger"> *</span>
+                          </label>
+                          <Controller
+                            name="numberOfPacks"
+                            control={control}
+                            rules={{
+                              required: "Number of Packs is required",
+                              min: { value: 1, message: "Must be at least 1" },
+                            }}
+                            render={({ field }) => (
+                              <input
+                                {...field}
+                                type="number"
+                                className={`form-control ${
+                                  errors?.numberOfPacks ? "error-input" : ""
+                                }`}
+                                placeholder="Enter the number of packs"
+                              />
+                            )}
+                          />
+                          <small>{errors?.numberOfPacks?.message}</small>
+                        </div>
+                      </div>
+                      <div className="col-lg-4 col-md-6 col-sm-12">
+                        {/* Master Case Type */}
+                        <div className="form-group input_text">
+                          <label>
+                            Master Case Type
+                          </label>
+                          <Controller
+                            name="masterCaseType"
+                            control={control}
+                            render={({ field }) => (
+                              <input
+                                {...field}
+                                type="text"
+                                className={`form-control ${
+                                  errors?.masterCaseType ? "error-input" : ""
+                                }`}
+                                placeholder="Enter master case type"
+                              />
+                            )}
+                          />
+                          <small>{errors?.masterCaseType?.message}</small>
+                        </div>
+                      </div>
+                      <div className="col-lg-4 col-md-6 col-sm-12">
+                        {/* Slot */}
+                        <div className="form-group input_text">
+                          <label>
+                            Slot
+                          </label>
+                          <Controller
+                            name="slot"
+                            control={control}
+                            render={({ field }) => (
+                              <input
+                                {...field}
+                                type="text"
+                                className={`form-control ${
+                                  errors?.slot ? "error-input" : ""
+                                }`}
+                                placeholder="Enter slot"
+                              />
+                            )}
+                          />
+                          <small>{errors?.slot?.message}</small>
                         </div>
                       </div>
                       <div className="col-lg-4 col-md-6 col-sm-12">
@@ -338,32 +443,87 @@ const Addproduct = () => {
                         </div>
                       </div>
                       <div className="col-lg-4 col-md-6 col-sm-12">
+                        {/* Primary Unit */}
                         <div className="form-group input_text">
                           <label>
-                            Discount Type{" "}
-                            <span className="text-danger"> *</span>
+                            Primary Unit<span className="text-danger"> *</span>
                           </label>
                           <Controller
-                            name="discountType"
+                            name="primaryUnit"
                             control={control}
+                            rules={{ required: "Primary Unit is required" }}
                             render={({ field }) => (
-                              <Select
+                              <select
                                 {...field}
-                                className={`react-selectcomponent form-control ${
-                                  errors?.discountType ? "error-input" : ""
+                                className={`form-control ${
+                                  errors?.primaryUnit ? "error-input" : ""
                                 }`}
-                                getOptionLabel={(option) => `${option.text}`}
-                                getOptionValue={(option) => `${option.id}`}
-                                options={discount}
-                                isSearchable={true}
-                                placeholder={`Select Item Discount Type`}
-                                classNamePrefix="select_kanakku"
-                              />
+                              >
+                                <option value="">None</option>
+                                <option value="Bag">BAGS (Bag)</option>
+                                <option value="Btl">BOTTLES (Btl)</option>
+                                <option value="Box">BOX (Box)</option>
+                                <option value="Bdl">BUNDLES (Bdl)</option>
+                                <option value="Can">CANS (Can)</option>
+                                <option value="Ctn">CARTONS (Ctn)</option>
+                                <option value="Dzn">DOZENS (Dzn)</option>
+                                <option value="Gm">GRAMMES (Gm)</option>
+                                <option value="Kg">KILOGRAMS (Kg)</option>
+                                <option value="Ltr">LITRE (Ltr)</option>
+                                <option value="Mtr">METERS (Mtr)</option>
+                                <option value="Ml">MILLILITER (Ml)</option>
+                                <option value="Nos">NUMBERS (Nos)</option>
+                                <option value="Pac">PACKS (Pac)</option>
+                                <option value="Prs">PAIRS (Prs)</option>
+                                <option value="Pcs">PIECES (Pcs)</option>
+                              </select>
                             )}
                           />
-                          <small>{errors?.discountType?.id?.message}</small>
+                          <small>{errors?.primaryUnit?.message}</small>
                         </div>
                       </div>
+
+                      <div className="col-lg-4 col-md-6 col-sm-12">
+                        {/* Secondary Unit */}
+                        <div className="form-group input_text">
+                          <label>
+                            Secondary Unit<span className="text-danger"> *</span>
+                          </label>
+                          <Controller
+                            name="secondaryUnit"
+                            control={control}
+                            rules={{ required: "Secondary Unit is required" }}
+                            render={({ field }) => (
+                              <select
+                                  {...field}
+                                  className={`form-control ${
+                                    errors?.secondaryUnit ? "error-input" : ""
+                                  }`}
+                                >
+                                <option value="">None</option>
+                                <option value="Bag">BAGS (Bag)</option>
+                                <option value="Btl">BOTTLES (Btl)</option>
+                                <option value="Box">BOX (Box)</option>
+                                <option value="Bdl">BUNDLES (Bdl)</option>
+                                <option value="Can">CANS (Can)</option>
+                                <option value="Ctn">CARTONS (Ctn)</option>
+                                <option value="Dzn">DOZENS (Dzn)</option>
+                                <option value="Gm">GRAMMES (Gm)</option>
+                                <option value="Kg">KILOGRAMS (Kg)</option>
+                                <option value="Ltr">LITRE (Ltr)</option>
+                                <option value="Mtr">METERS (Mtr)</option>
+                                <option value="Ml">MILLILITER (Ml)</option>
+                                <option value="Nos">NUMBERS (Nos)</option>
+                                <option value="Pac">PACKS (Pac)</option>
+                                <option value="Prs">PAIRS (Prs)</option>
+                                <option value="Pcs">PIECES (Pcs)</option>
+                            </select>
+                            )}
+                          />
+                          <small>{errors?.secondaryUnit?.message}</small>
+                        </div>
+                      </div>
+                      
                       
                       
                       <div className="col-lg-4 col-md-6 col-sm-12">
@@ -462,7 +622,7 @@ const Addproduct = () => {
                           <small>{errors?.purchasePrice?.message}</small>
                         </div>
                       </div>
-                      <div className="col-lg-4 col-md-6 col-sm-12">
+                      {/* <div className="col-lg-4 col-md-6 col-sm-12">
                         <div className="form-group input_text">
                           <label>
                             Wholesale Price <span className="text-danger"> *</span>
@@ -485,7 +645,7 @@ const Addproduct = () => {
                           />
                           <small>{errors?.wholesalePrice?.message}</small>
                         </div>
-                      </div>
+                      </div> */}
                       {/*<div className="col-lg-4 col-md-6 col-sm-12">
                         <div className="form-group input_text">
                           <label>
@@ -514,35 +674,90 @@ const Addproduct = () => {
                           <small>{errors?.discountValue?.message}</small>
                         </div>
                       </div>*/}
+                      
+                      
+                      
+
+                      
                       <div className="col-lg-4 col-md-6 col-sm-12">
-                        <div className="form-group add-products input_text">
-                          <label>
-                            Generate Barcode <span className="text-danger"> *</span>
-                          </label>
+                        <div className="form-group input_text">
+                          <label>Half Skit Quantity</label>
                           <Controller
-                            name="barcode"
-                            type="text"
+                            name="halfSkitQty"
                             control={control}
                             render={({ field: { value, onChange } }) => (
                               <input
-                                className={`form-control ${errors?.barcode ? "error-input" : ""}`}
-                                type="text"
+                                className="form-control"
+                                type="number"
+                                onKeyPress={handleNumberRestriction}
                                 value={value}
                                 onChange={onChange}
-                                placeholder="Enter Barcode"
-                                autoComplete="false"
+                                placeholder="Enter Half Skit Quantity"
                               />
                             )}
-                            defaultValue=""
                           />
-                          <button
-                            type="button"
-                            onClick={() => getbarcode()}
-                            className="btn btn-primary"
-                          >
-                            Generate Code
-                          </button>
-                          <small>{errors?.barcode?.message}</small>
+                        </div>
+                      </div>
+
+                      <div className="col-lg-4 col-md-6 col-sm-12">
+                        <div className="form-group input_text">
+                          <label>Half Skit Price</label>
+                          <Controller
+                            name="halfSkitPrice"
+                            control={control}
+                            render={({ field: { value, onChange } }) => (
+                              <input
+                                className="form-control"
+                                type="number"
+                                step="0.01"
+                                onKeyPress={handleNumberRestriction}
+                                value={value}
+                                onChange={onChange}
+                                placeholder="Enter Half Skit Price"
+                              />
+                            )}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-lg-4 col-md-6 col-sm-12">
+                        <div className="form-group input_text">
+                          <label>Full Skit Quantity</label>
+                          <Controller
+                            name="fullSkitQty"
+                            control={control}
+                            render={({ field: { value, onChange } }) => (
+                              <input
+                                className="form-control"
+                                type="number"
+                                onKeyPress={handleNumberRestriction}
+                                value={value}
+                                onChange={onChange}
+                                placeholder="Enter Full Skit Quantity"
+                              />
+                            )}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-lg-4 col-md-6 col-sm-12">
+                        <div className="form-group input_text">
+                          <label>Full Skit Price</label>
+                          <Controller
+                            name="fullSkitPrice"
+                            control={control}
+                            render={({ field: { value, onChange } }) => (
+                              <input
+                                className="form-control"
+                                type="number"
+                                step="0.01"
+                                onKeyPress={handleNumberRestriction}
+                                value={value}
+                                onChange={onChange}
+                                placeholder="Enter Full Skit Price"
+                              />
+                            )}
+                          />
                         </div>
                       </div>
                       <div className="col-lg-4 col-md-6 col-sm-12">
@@ -574,115 +789,32 @@ const Addproduct = () => {
                         </div>
                       </div>
                       <div className="col-lg-4 col-md-6 col-sm-12">
-                        {/* Primary Unit */}
                         <div className="form-group input_text">
                           <label>
-                            Primary Unit<span className="text-danger"> *</span>
+                            Discount Type{" "}
+                            <span className="text-danger"> *</span>
                           </label>
                           <Controller
-                            name="primaryUnit"
+                            name="discountType"
                             control={control}
-                            rules={{ required: "Primary Unit is required" }}
                             render={({ field }) => (
-                              <select
+                              <Select
                                 {...field}
-                                className={`form-control ${
-                                  errors?.primaryUnit ? "error-input" : ""
+                                className={`react-selectcomponent form-control ${
+                                  errors?.discountType ? "error-input" : ""
                                 }`}
-                              >
-                                <option value="">None</option>
-                                <option value="Bag">BAGS (Bag)</option>
-                                <option value="Btl">BOTTLES (Btl)</option>
-                                <option value="Box">BOX (Box)</option>
-                                <option value="Bdl">BUNDLES (Bdl)</option>
-                                <option value="Can">CANS (Can)</option>
-                                <option value="Ctn">CARTONS (Ctn)</option>
-                                <option value="Dzn">DOZENS (Dzn)</option>
-                                <option value="Gm">GRAMMES (Gm)</option>
-                                <option value="Kg">KILOGRAMS (Kg)</option>
-                                <option value="Ltr">LITRE (Ltr)</option>
-                                <option value="Mtr">METERS (Mtr)</option>
-                                <option value="Ml">MILLILITER (Ml)</option>
-                                <option value="Nos">NUMBERS (Nos)</option>
-                                <option value="Pac">PACKS (Pac)</option>
-                                <option value="Prs">PAIRS (Prs)</option>
-                                <option value="Pcs">PIECES (Pcs)</option>
-                              </select>
-                            )}
-                          />
-                          <small>{errors?.primaryUnit?.message}</small>
-                        </div>
-                      </div>
-
-                      <div className="col-lg-4 col-md-6 col-sm-12">
-                        {/* Secondary Unit */}
-                        <div className="form-group input_text">
-                          <label>
-                            Secondary Unit<span className="text-danger"> *</span>
-                          </label>
-                          <Controller
-                            name="secondaryUnit"
-                            control={control}
-                            rules={{ required: "Secondary Unit is required" }}
-                            render={({ field }) => (
-                              <select
-                                  {...field}
-                                  className={`form-control ${
-                                    errors?.secondaryUnit ? "error-input" : ""
-                                  }`}
-                                >
-                                <option value="">None</option>
-                                <option value="Bag">BAGS (Bag)</option>
-                                <option value="Btl">BOTTLES (Btl)</option>
-                                <option value="Box">BOX (Box)</option>
-                                <option value="Bdl">BUNDLES (Bdl)</option>
-                                <option value="Can">CANS (Can)</option>
-                                <option value="Ctn">CARTONS (Ctn)</option>
-                                <option value="Dzn">DOZENS (Dzn)</option>
-                                <option value="Gm">GRAMMES (Gm)</option>
-                                <option value="Kg">KILOGRAMS (Kg)</option>
-                                <option value="Ltr">LITRE (Ltr)</option>
-                                <option value="Mtr">METERS (Mtr)</option>
-                                <option value="Ml">MILLILITER (Ml)</option>
-                                <option value="Nos">NUMBERS (Nos)</option>
-                                <option value="Pac">PACKS (Pac)</option>
-                                <option value="Prs">PAIRS (Prs)</option>
-                                <option value="Pcs">PIECES (Pcs)</option>
-                            </select>
-                            )}
-                          />
-                          <small>{errors?.secondaryUnit?.message}</small>
-                        </div>
-                      </div>
-
-                      <div className="col-lg-4 col-md-6 col-sm-12">
-                        {/* Number of Packs for a Box */}
-                        <div className="form-group input_text">
-                          <label>
-                            Number of Packs for a Box<span className="text-danger"> *</span>
-                          </label>
-                          <Controller
-                            name="numberOfPacks"
-                            control={control}
-                            rules={{
-                              required: "Number of Packs is required",
-                              min: { value: 1, message: "Must be at least 1" },
-                            }}
-                            render={({ field }) => (
-                              <input
-                                {...field}
-                                type="number"
-                                className={`form-control ${
-                                  errors?.numberOfPacks ? "error-input" : ""
-                                }`}
-                                placeholder="Enter the number of packs"
+                                getOptionLabel={(option) => `${option.text}`}
+                                getOptionValue={(option) => `${option.id}`}
+                                options={discount}
+                                isSearchable={true}
+                                placeholder={`Select Item Discount Type`}
+                                classNamePrefix="select_kanakku"
                               />
                             )}
                           />
-                          <small>{errors?.numberOfPacks?.message}</small>
+                          <small>{errors?.discountType?.id?.message}</small>
                         </div>
                       </div>
-
                       <div className="col-xl-6 col-lg-6 col-md-6 col-12">
                         <div className="form-group">
                           <label>Product Image</label>

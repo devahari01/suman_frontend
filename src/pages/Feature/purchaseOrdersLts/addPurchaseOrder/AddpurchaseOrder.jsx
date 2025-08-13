@@ -532,7 +532,7 @@ const handlePrimaryUnitChange = (evnt, key) => {
       title: "Weights",
       dataIndex: "weight",
       render: (text, record) => {
-        const weightValue = record.primaryUnit
+        let weightValue = record.primaryUnit
           ? record.quantity * record.weight * record.numberOfPacks
           : record.quantity * record.weight;
 
@@ -803,7 +803,7 @@ const handlePrimaryUnitChange = (evnt, key) => {
                                   errors?.referenceNo ? "error-input" : ""
                                 }`}
                                 type="text"
-                                onKeyPress={handleNumberRestriction}
+                                // onKeyPress={handleNumberRestriction}
                                 value={value}
                                 onChange={onChange}
                                 placeholder="Enter Reference Number"

@@ -143,7 +143,7 @@ const AddpurchaseOrderComponentController = (props) => {
       formData.append(`items[${i}][tax]`, dataSource[i].tax);
       formData.append(`items[${i}][primaryUnit]`, dataSource[i]?.primaryUnit);
       formData.append(`items[${i}][numberOfPacks]`, dataSource[i]?.numberOfPacks);
-      formData.append(`items[${i}][weight]`, dataSource[i].weight*dataSource[i].quantity);
+      formData.append(`items[${i}][weight]`, dataSource[i].weight);
       formData.append(
         `items[${i}][taxInfo]`,
         JSON.stringify(dataSource[i].taxInfo)

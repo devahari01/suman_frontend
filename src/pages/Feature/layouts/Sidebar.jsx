@@ -374,7 +374,7 @@ const Sidebar = () => {
                     
                   </ul>
                 </li>
-                {/* <li
+                <li
                   className={`${
                     "/inventory" === pathName
                       ? "active"
@@ -387,7 +387,7 @@ const Sidebar = () => {
                   <Link to="/inventory" onClick={() => toggleSidebar("")}>
                     <FeatherIcon icon="user" /> <span>Inventory</span>
                   </Link>
-                </li> */}
+                </li> 
                 <li
                   className={`${
                     "/inventory" === pathName
@@ -404,12 +404,12 @@ const Sidebar = () => {
                 </li>
                 <li
                   className={`${
-                    "/inventory" === pathName
+                    "/pricing" === pathName
                       ? "active"
                       : ""
                   }`}
                   style={{
-                    display: showHide("inventory") ? "none" : "block",
+                    display: showHide("pricing") ? "none" : "block",
                   }}
                 >
                   <Link to="/pricing" onClick={() => toggleSidebar("")}>
@@ -805,6 +805,13 @@ const Sidebar = () => {
                     display: showHide("role") ? "none" : "block",
                   }}
                 >
+                  <Link
+                    to="/userinvoice"
+                    onClick={() => toggleSidebar("")}
+                  >
+                    <FeatherIcon icon="clipboard" />{" "}
+                    <span>User Invoice Stats</span>
+                  </Link>
                   <Link
                     to="/roles-permission"
                     onClick={() => toggleSidebar("")}
